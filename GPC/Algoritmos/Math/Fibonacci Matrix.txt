@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+#include <cstdint>
+using namespace std;
+#define int long long 
+const long long mod =1000000007;
+pair<int, int> fib (int n) {
+    if (n == 0)
+        return {0, 1};
+
+    pair<int,int> p = fib(n >> 1);
+    int c = ((p.first)%mod * ((2 * (p.second)%mod)%mod - p.first%mod)%mod)%mod;
+    int d = (((p.first%mod) * (p.first%mod))%mod+ ((p.second%mod) * (p.second%mod))%mod)%mod;
+    if(c<0)c+=mod;
+    if(d<0)d+=mod;
+    if (n & 1)
+        return {d, (c + d)%mod};
+    else
+        return {c, d};
+}
+int32_t main(){
+    ios_base::sync_with_stdio(0); cin.tie(NULL);
+    int t=1,m,n;
+    // cin>>t;
+    while(t--){
+        cin>>n;
+        int ans=fib(n).first%mod;
+        if(ans<0)ans+=mod;
+        cout<<ans;
+    }
+}

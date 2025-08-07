@@ -1,0 +1,127 @@
+/***--_saelcc03_--***/
+
+#include<bits/stdc++.h>
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+
+using namespace std;
+using namespace __gnu_pbds;
+template <class T>
+using ordered_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+#define fori(i,n) for(int i=0;i<n;i++)
+#define fore(i,n) for(int i=1;i<=n;i++)
+#define fora(i,n) for(int i=n-1;i>=0;i--)
+#define foro(i,a,b) for(int i=a;i<b;i++)
+#define int long long
+#define limit LLONG_MAX
+#define pii pair<int,int>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define vii vector<pair<int,int>>
+#define vvii vector<vector<pair<int,int>>>
+#define vvvi vector<vector<vector<int>>>
+#define vb vector<bool>
+#define vs vector<string>
+#define si set<int>
+#define mpii map<int,int>
+#define pb push_back
+#define all(v) v.begin(),v.end()
+#define rall(v) v.rbegin(), v.rend()
+#define sz(x) x.size()
+#define yesi cout<<"YES"<<'\n'
+#define nosi cout<<"NO"<<'\n'
+#define endl '\n'
+#define approx(a) fixed << setprecision(a)
+#define ff first
+#define ss second
+#define fast read(n); vi v(n); read(v)
+template <class T> void read(vector<T> &v);
+template <class F, class S> void read(pair<F, S> &p);
+template <class T> void read(T &x) {cin >> x;}
+template <class T> void read(vector<T> &v) {for(auto& x : v) read(x);}
+template <class R, class... T> void read(R& r, T&... t){read(r); read(t...);};
+template <class F, class S> void read(pair<F, S> &p) {read(p.ff, p.ss);}
+
+template <class T> void ps(vector<T> &v);
+template <class F, class S> void pr(const pair<F, S> &x);
+template <class T> void pr(const T &x) {cout << x;}
+void ps() {pr("\n");}
+template <class R, class... T> void pr(const R& r, const T&... t) {pr(r); pr(t...);}
+template <class F, class S> void pr(const pair<F, S> &x) {pr("{", x.ff, ", ", x.ss, "}\n");}
+template <class T> void ps(vector<T> &v) {for(auto& x : v) pr(x, ' '); ps();}
+template <class T> void ps(const T &x) {pr(x); ps();}
+template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
+
+int tc=1,n,m;
+struct SuffixArray{
+  string s;
+  int n;
+  vi p,c,lcp,rank,lg;
+  SuffixArray(string &s):s(s){
+    n = s.size();
+    sa_build();
+    rank = vi(n);
+    fori(i,n)rank[p[i]]=i;
+    lcp_build();
+  }
+  void sa_build(){
+    s+="$"; n++;
+    vi cnt(max(256ll,n)); p=c=vi(n);
+    int cls = 1;
+    fori(i,n)cnt[s[i]]++;
+    partial_sum(all(cnt),cnt.begin());
+    fori(i,n) p[--cnt[s[i]]] = i;
+    fore(i,n-1) {
+      if(s[p[i]]!=s[p[i-1]]) cls++;
+      c[p[i]] = cls - 1; 
+    } 
+    for(int k=0;(1<<k)<n;k++){
+      vi pn(n),cn(n);
+      fori(i,n) pn[i] = p[i]-(1<<k) + n*(p[i]<(1<<k));
+      fill(cnt.begin(),cnt.begin()+cls,0);
+      fori(i,n) cnt[c[pn[i]]]++;
+      partial_sum(cnt.begin(),cnt.begin()+cls,cnt.begin());
+      fora(i,n) p[--cnt[c[pn[i]]]] = pn[i];
+      cls = 1;
+      for(int i=1;i<n;i++){
+        pii a = {c[p[i]], c[(p[i]+(1<<k))%n]};
+        pii b = {c[p[i-1]], c[(p[i-1]+(1<<k))%n]};
+        if(a!=b) cls++;
+        cn[p[i]] = cls-1;
+      }
+      c = cn;
+    }
+    p.erase(p.begin());
+    s.pop_back(); n--;
+  }
+  void lcp_build(){
+    lcp = vi(n-1);
+    for(int i=0,k=0;i<n;i++){
+      if(rank[i]==n-1){k=0;continue;}
+      int j = p[rank[i]+1];
+      while(i+k<n and j+k<n and s[i+k]==s[j+k])k++;
+      lcp[rank[i]]=k;
+      if(k)k--;
+    }
+  }
+
+};
+
+void solve(){
+  string s = "asdfdsdfweadsasdaafdsflmepasd";
+  SuffixArray sa(s);
+  sa.sa_build();
+  sa.lcp_build();
+  ps(sa.s);
+  ps(sa.p);
+  ps(sa.lcp);
+}
+
+
+int32_t main(){
+  ios::sync_with_stdio(false); cin.tie(0);
+  /*read(tc); */
+  while(tc--){
+    solve();
+  }
+}
