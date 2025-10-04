@@ -68,7 +68,88 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
+mt19937 rng(chrono::steady_clock::now().time_since_epoch().count());
+int random(int l, int r){
+  return uniform_int_distribution<int>(l,r)(rng);
+}
 
+struct node{
+  int val,pri,siz;
+  node*l,*r;
+  node(int val):val(val),siz(1),pri(random(1,1e9)){
+    l=r=nullptr;
+  }
+  void update(){
+    siz = 1 + (l?l->siz:0) + (r?r->siz:0);
+  }
+};
+struct treap{
+  node* root=nullptr;
+  pair<node*,node*> split(node* t, int val){
+    if(!t) return {nullptr, nullptr};
+    if(t->val<=val){
+      auto p = split(t->r,val);
+      t->r = p.first; t->update();
+      return {t,p.second};
+    }else{
+      auto p = split(t->l,val);
+      t->l = p.second; t->update();
+      return {p.first,t};
+    }
+  }
+  node* merge(node *l, node* r){
+    if(!l or !r) return (l?l:r);
+    if(l->pri>r->pri){
+      l->r = merge(l->r,r);
+      l->update();
+      return l;
+    }else{
+      r->l = merge(l,r->l);
+      r->update();
+      return r;
+    }
+  }
+  void insert(int val){
+    auto a = split(root,val);
+    root = merge(a.first,new node(val));
+    root = merge(root,a.second);
+  }
+  void remove(int val){
+    auto a = split(root,val);
+    auto b = split(a.first,val-1);
+    root = merge(b.first,a.second);
+  }
+  int countLess(int val){
+    return countLess(root,val);
+  }
+  int kth(int k){
+    node * res = kth(root,k);
+    return res?res->val:-1;
+  }
+  int size(){ return root ? root->siz : 0; }
+  bool exists(int val){
+    return countLess(val+1) - countLess(val) > 0;
+  }
+  int lower_bound(int val){
+    return kth(countLess(val));
+  }
+  int upper_bound(int val){
+    return kth(countLess(val+1));
+  }
+private:
+  node* kth(node *t, int k){
+    if(!t) return nullptr;
+    int lft_sz = (t->l?t->l->siz:0);
+    if(k<lft_sz) return kth(t->l,k);
+    else if(lft_sz == k) return t;
+    else return kth(t->r,k-lft_sz-1);
+  }
+  int countLess(node *t,int val){
+    if(!t) return 0;
+    if(t->val<val) return 1+(t->l?t->l->siz:0) + countLess(t->r, val);
+    else return countLess(t->l, val);
+  }
+};
 void solve(int caso){
 
 }
