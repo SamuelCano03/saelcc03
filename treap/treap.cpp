@@ -126,15 +126,11 @@ struct treap{
     node * res = kth(root,k);
     return res?res->val:-1;
   }
-  int size(){ return root ? root->siz : 0; }
   bool exists(int val){
     return countLess(val+1) - countLess(val) > 0;
   }
   int lower_bound(int val){
     return kth(countLess(val));
-  }
-  int upper_bound(int val){
-    return kth(countLess(val+1));
   }
 private:
   node* kth(node *t, int k){
