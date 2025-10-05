@@ -79,21 +79,22 @@ struct node{
   node(int val):val(val),siz(1),pri(random(1,1e9)){
     l=r=nullptr;
   }
-  void update(){
-    siz = 1 + (l?l->siz:0) + (r?r->siz:0);
-  }
 };
+int siz(node*t){return t?t->siz:0;}
+void sync(node*t){
+  if(t) t->siz = siz(t->l) + 1 + siz(t->r);
+}
 struct treap{
   node* root=nullptr;
   pair<node*,node*> split(node* t, int val){
     if(!t) return {nullptr, nullptr};
     if(t->val<=val){
       auto p = split(t->r,val);
-      t->r = p.first; t->update();
+      t->r = p.first; sync(t);
       return {t,p.second};
     }else{
       auto p = split(t->l,val);
-      t->l = p.second; t->update();
+      t->l = p.second; sync(t);
       return {p.first,t};
     }
   }
@@ -101,11 +102,11 @@ struct treap{
     if(!l or !r) return (l?l:r);
     if(l->pri>r->pri){
       l->r = merge(l->r,r);
-      l->update();
+      sync(l);
       return l;
     }else{
       r->l = merge(l,r->l);
-      r->update();
+      sync(r);
       return r;
     }
   }
