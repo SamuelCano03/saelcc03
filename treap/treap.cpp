@@ -134,12 +134,11 @@ struct treap{
     return kth(countLess(val));
   }
 private:
-  node* kth(node *t, int k){
-    if(!t) return nullptr;
-    int lft_sz = siz(t->l);
-    if(k<lft_sz) return kth(t->l,k);
-    else if(lft_sz == k) return t;
-    else return kth(t->r,k-lft_sz-1);
+  node* kth(node* t, int k){
+    if(!t)return nullptr;
+    if(siz(t->l)>k) return kth(t->l,k);
+    else if(siz(t->l)==k) return t;
+    else return kth(t->r,k-siz(t->l)-1);
   }
   int countLess(node *t,int val){
     if(!t) return 0;
