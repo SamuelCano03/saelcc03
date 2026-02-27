@@ -22,8 +22,8 @@ using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_or
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
 #define foro(i,a,b) for(int i=a;i<(int)b;i++)
 #define int long long
-#define inf 1e9
-#define INF 1e18
+// #define inf 1e9
+// #define INF 1e18
 #define pii pair<int,int>
 #define piii tuple<int,int,int>
 #define vi vector<int>
@@ -68,9 +68,40 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
+int lis(vector<int> const& a) {
+    int n = a.size();
+    const int INF = 1e9;
+    vector<int> d(n+1, INF);
+    d[0] = -INF;
 
+    for (int i = 0; i < n; i++) {
+        int l = upper_bound(d.begin(), d.end(), a[i]) - d.begin();
+        if (d[l-1] < a[i] && a[i] < d[l])
+            d[l] = a[i];
+    }
+
+    int ans = 0;
+    for (int l = 0; l <= n; l++) {
+        if (d[l] < INF)
+            ans = l;
+    }
+    return ans;
+}
 void solve(int caso){
-
+  fast;
+  return ps(lis(v));
+  vi in,de,nin(n,1),nde(n,1);
+  fori(i,n){
+    if(i==0){in.pb(v[0]),de.pb(v.back());continue;}
+    in.pb(max(in.back(),v[i]));
+    de.pb(max(de.back(),v[n-i-1]));
+  }
+  dbg(in);
+  dbg(de);
+  fore(i,n-1){
+    // nin
+    // nde[i]=nde[i-1] + (de[i]!=de[i-1]);
+  }
 }
 
 

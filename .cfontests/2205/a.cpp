@@ -70,7 +70,10 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  fast;
+  if(v[0]==n) return ps(v);
+  fori(i,n)if(v[i]==n)swap(v[0],v[i]);
+  ps(v);
 }
 
 

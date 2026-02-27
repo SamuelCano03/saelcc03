@@ -69,31 +69,13 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
-vi primes;
-vb isprime(1e6,true);
-void criba(){
-  isprime[0]=isprime[1]=false;
-  for(int i=2;i<1e6;i++){
-    if(!isprime[i])continue;
-    primes.pb(i);
-    for(int j=i*i;j<1e6;j+=i)isprime[j]=false;
-  }
-}
 void solve(int caso){
-  read(n);
-  int ret = 1;
-  for(int p: primes){
-    if(n%p==0)ret*=p;
-    while(n%p==0)n/=p;
-  }
-  if(n>1)ret*=n;
-  ps(ret);
+
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  criba();
   read(tc); 
   fore(caso, tc){
     solve(caso);
