@@ -68,34 +68,34 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+const int mod = 1e9+7;
+int dfs(int u, vii& adj, vi& ti){
+  if(adj[u].ff==0) return ti[u]=1;
+  return ti[u] = (3 + dfs(adj[u].ff,adj,ti)+dfs(adj[u].ss,adj,ti))%mod;
+}
+int sfd(int u, vii& adj, vi& ti, vi &ans, vi& pr){
+  if(ans[u]!=-1)return ans[u];
+  return ans[u] = (ti[u]+sfd(pr[u],adj,ti,ans,pr))%mod;
+}
 void solve(int caso){
   read(n);
-  vvi v(n);
+  vii adj;
+  adj.pb({1,-1});
+  vi ti(n+1),ans(n+1,-1),pr(n+1);
   fori(i,n){
-    int l; read(l);
-    vi temp(l); read(temp);
-    reverse(all(temp));
-    si st;
-    for(int x: temp)if(st.find(x)==st.end())v[i].pb(x),st.insert(x);
+    pii p; read(p.ff,p.ss);
+    pr[p.ff] = i+1;
+    pr[p.ss] = i+1;
+    adj.pb(p);
   }
-  vi ans;
-  mpii is;
-  vb bg(n,false);
-  fori(j,n){
-    int id = -1;
-    vi best;
-    fori(i,n){
-      if(bg[i])continue;
-      vi cur;
-      for(int e: v[i])if(!is[e])cur.pb(e);
-      if(id==-1 or cur<best)best=cur,id=i;
-    }
-    if(id==-1)break;
-    bg[id]=true;
-    for(int e: best) ans.pb(e),is[e]=1;
+  if(n==1)return ps(1);
+  dfs(1,adj,ti);
+  // ps(ti);
+  ans[1] = ti[1];
+  fore(i,n){
+    if(ans[i]==-1)sfd(i,adj,ti,ans,pr);
   }
-  ps(ans);
+  fore(i,n)cout<<ans[i]<<' ';ps();
 }
 
 

@@ -70,32 +70,21 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-  read(n);
-  vvi v(n);
-  fori(i,n){
-    int l; read(l);
-    vi temp(l); read(temp);
-    reverse(all(temp));
-    si st;
-    for(int x: temp)if(st.find(x)==st.end())v[i].pb(x),st.insert(x);
-  }
-  vi ans;
-  mpii is;
-  vb bg(n,false);
-  fori(j,n){
-    int id = -1;
-    vi best;
-    fori(i,n){
-      if(bg[i])continue;
-      vi cur;
-      for(int e: v[i])if(!is[e])cur.pb(e);
-      if(id==-1 or cur<best)best=cur,id=i;
+  fast;
+  for(int i=0;i<n;i+=2){
+    vi u;
+    for(int j=i+1;j<=n;j*=2){
+      u.pb(v[j-1]);
     }
-    if(id==-1)break;
-    bg[id]=true;
-    for(int e: best) ans.pb(e),is[e]=1;
+    sort(all(u));
+    for(int k=0,j=i+1;j<=n;j*=2){
+      v[j-1]=u[k++];
+    }
   }
-  ps(ans);
+  vi u = v;
+  sort(all(u));
+  if(u==v)yesi;
+  else nosi;
 }
 
 
