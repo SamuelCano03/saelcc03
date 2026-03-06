@@ -68,9 +68,41 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+void fx(vi & a){
+  int id = -1;
+  int mn = n+1;
+  fori(i,sz(a)){
+    if(mn>a[i])mn=a[i],id=i;
+  }
+  vi ax;
+  for(int i=id;i<sz(a);i++)ax.pb(a[i]);
+  for(int i=0;i<id;i++)ax.pb(a[i]);
+  swap(ax,a);
+}
 void solve(int caso){
-
+  int x,y;
+  read(n,x,y);
+  vi v(n); read(v);
+  vi a,b;
+  fore(i,n){
+    if(i<=x)a.pb(v[i-1]);
+    else if(i<=y)b.pb(v[i-1]);
+    else a.pb(v[i-1]);
+  }
+  // fx(a);
+  fx(b);
+  // dbg(a);
+  // dbg(b);
+  reverse(all(a));
+  reverse(all(b));
+  vi ans;
+  while(sz(a) or sz(b)){
+    if(!sz(a)){ans.insert(ans.end(),rall(b));break;}
+    if(!sz(b)){ans.insert(ans.end(),rall(a));break;}
+    if(a.back()<b.back()){ans.pb(a.back()); a.pop_back();}
+    else {ans.insert(ans.end(),rall(b)); ans.insert(ans.end(),rall(a)); break;}
+  }
+  ps(ans);
 }
 
 

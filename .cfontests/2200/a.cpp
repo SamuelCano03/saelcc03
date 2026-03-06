@@ -70,7 +70,12 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  fast;
+  int mx = 0;
+  for(int e: v)mx = max(mx,e);
+  int cnt = 0;
+  for(int e: v)cnt += (e==mx);
+  ps(cnt);
 }
 
 

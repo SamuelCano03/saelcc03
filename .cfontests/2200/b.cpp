@@ -70,7 +70,12 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  fast;
+  bool inc = true;
+  int pre = 0;
+  fore(i,n-1)if(v[i]<v[i-1]){inc=false;break;}
+  if(inc)ps(n);
+  else ps(1);
 }
 
 

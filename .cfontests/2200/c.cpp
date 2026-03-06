@@ -70,7 +70,26 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  read(n);
+  string s; read(s);
+  while(true){
+    string z = s;
+    n = sz(s);
+    fori(i,n-1){
+      if(s[i]==s[i+1] and s[i]!='*'){
+        int j=i,k=i+1;
+        while(j>=0 and k<=n-1 and s[j]==s[k] and s[j]!='*'){
+          s[j--]=s[k++]='*';
+        }
+      }
+    }
+    string l;
+    for(char c: s)if(c!='*')l.pb(c);
+    s = l;
+    if(z==s)break;
+  }
+  fori(i,sz(s))if(s[i]!='*')return nosi;
+  yesi;
 }
 
 

@@ -68,14 +68,43 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi primes;
+vb isprime(1e6+1,true);
+vi spf(1e6+1);
+void criba(){
+  isprime[0]=isprime[1]=false;
+  for(int i=2;i<=1e6;i++){
+    if(!isprime[i])continue;
+    spf[i]=i;
+    primes.pb(i);
+    for(int j=i*i;j<=1e6;j+=i)isprime[j]=false,spf[j]=i;
+  }
+}
 void solve(int caso){
-
+  fast;
+  bool inc=true;
+  fore(i,n-1)if(v[i]<v[i-1]){inc=false;break;}
+  if(inc)return ps("Bob");
+  int mx = 0;
+  for(int e: v){
+    mpii mp;
+    int k=e;
+    while(k>1){
+      mp[spf[k]]++;
+      k/=spf[k];
+    }
+    if(sz(mp)>1)return ps("Alice");
+    int val = (*mp.begin()).ff;
+    if(mx>val)return ps("Alice");
+    mx=max(val,mx);
+  }
+  ps("Bob");
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
+  criba();
   read(tc); 
   fore(caso, tc){
     solve(caso);
