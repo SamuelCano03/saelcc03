@@ -1,22 +1,22 @@
 /***--_saelcc03_--***/
-
+ 
 #include<bits/stdc++.h>
 using namespace std;
-
+ 
 #ifdef LOCAL
 #include "debug.cpp"
 #else
 #define dbg(...)
 #endif
-
+ 
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
+// using namespace __gnu_pbds;
+// template <class T>
+// using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// template <class T>
+// using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+ 
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
@@ -66,26 +66,62 @@ template <class T> void ps(vector<T> &v) {for(auto& x : v) pr(x, ' '); ps();}
 template <class T> void ps(set<T> &v) {for(auto& x : v) pr(x, ' '); ps();}
 template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
-
+ 
+#define maxn 1000000
 int tc=1,n,m;
-
-void solve(int caso){
-
+ 
+vi term(maxn);
+vi cnt(maxn);
+vvi trie(maxn,vi(26));
+int nodos = 1;
+ 
+void addWord(string s){
+  int cur=0;//nodo raiz
+  for(char c: s){
+    int edge=c-'a';
+    if(trie[cur][edge]==0) trie[cur][edge]=nodos++;
+    cur=trie[cur][edge];
+    cnt[cur]++;
+  }
+  term[cur]=1;
 }
-
-
+ 
+bool existWord(string s){
+  int cur=0;
+  for(char c: s){
+    int edge=c-'a';
+    if(!trie[cur][edge])return 0;
+    cur=trie[cur][edge];
+  }
+  return term[cur];
+}
+ 
+void solve(int caso){
+  read(n,m);
+  string s;
+  fori(i,n){read(s);  addWord(s);}
+  fori(i,m){
+    int ans = 0;
+    int cur = 0, is=1;
+    read(s);
+    for(char c: s){
+      int edge = c-'a';
+      if(!trie[cur][edge]){is=0;break;}
+      cur = trie[cur][edge];
+    }
+    if(is)ans = cnt[cur];
+    ps(ans);
+  }
+}
+ 
+ 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
-
-
-
-
-
 
 
 

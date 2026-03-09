@@ -68,15 +68,43 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi zf(string  &s){
+  int n = sz(s);
+  vi z(n);
+  z[0]=n;
+  int l=0,r=0;
+  fore(i,n-1){
+    if(i<r)z[i]=min(z[i-l],r-i);
+    while(i+z[i]<n and s[z[i]]==s[i+z[i]])z[i]++;
+    if(i+z[i]>r){
+      l=i;
+      r=i+z[i];
+    }
+  }
+  return z;
+}
 void solve(int caso){
-
+  string s;
+  read(s);
+  n = sz(s);
+  vi z = zf(s);
+  vi ans;
+  dbg(z);
+  fore(len,n){
+    int is=1;
+    for(int i=len;i<n;i+=len){
+      if(i+len>=n){is=(n-i==z[i]);break;}
+      if(z[i]<len){is=0;break;}
+    }
+    if(is)ans.pb(len);
+  }
+  ps(ans);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+   //read(tc); 
   fore(caso, tc){
     solve(caso);
   }

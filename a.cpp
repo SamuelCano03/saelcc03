@@ -70,7 +70,28 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  read(n);
+  string s,z; read(s);
+  z = s;
+  for(int i=0;i+2<n;i+=2){
+    if(s[i]=='1' and s[i+2]=='1')s[i+1]='1';
+    if(z[i]=='1' and z[i+2]=='1')z[i+1]='0';
+  }
+  for(int i=1;i+2<n;i+=2){
+    if(s[i]=='1' and s[i+2]=='1')s[i+1]='1';
+    if(z[i]=='1' and z[i+2]=='1')z[i+1]='0';
+  }
+  int c=0,a=0,b=0;
+  dbg(s,z);
+  fori(i,n)a+=z[i]-'0',b+=s[i]-'0';
+  z = s;
+  for(int i=0;i+2<n;i++)if(s[i]=='1' and s[i+2]=='1')s[i+1]='0';
+  for(int i=1;i+2<n;i++)if(s[i]=='1' and s[i+2]=='1')s[i+1]='0';
+  for(int i=1;i+2<n;i++)if(z[i]=='1' and z[i+2]=='1')z[i+1]='0';
+  for(int i=0;i+2<n;i++)if(z[i]=='1' and z[i+2]=='1')z[i+1]='0';
+  a=0;
+  fori(i,n)a+=z[i]-'0',c+=s[i]-'0';
+  ps(min(a,c),b);
 }
 
 
@@ -81,11 +102,6 @@ int32_t main(){
     solve(caso);
   }
 }
-
-
-
-
-
 
 
 

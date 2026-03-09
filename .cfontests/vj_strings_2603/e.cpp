@@ -11,11 +11,11 @@ using namespace std;
 
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// using namespace __gnu_pbds;
+// template <class T>
+// using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+// template <class T>
+// using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
@@ -68,19 +68,59 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+int maxn = 600000;
+vi cnt(maxn), stop(maxn);
+vvi trie(maxn, vi(26));
+int nodes = 1;
+void addWord(string &s){
+  int cur = 0;
+  for(char &c: s){
+    int e = c-'a';
+    if(!trie[cur][e])trie[cur][e]=nodes++;
+    cur=trie[cur][e];
+    cnt[cur]++;
+  }
+  stop[cur]=1;
+}
+bool existWord(string &s){
+  int cur=0;
+  for(char &c: s){
+    int e = c-'a';
+    if(!trie[cur][e])return 0;
+    cur=trie[cur][e];
+  }
+  return stop[cur];
+}
 void solve(int caso){
-
+  read(n);
+  vs v(n); read(v);
+  for(string &s: v)addWord(s);
+  for(string &s: v){
+    int cur = 0, mx =0;
+    for(char &c: s){
+      int e=c-'a';
+      cur=trie[cur][e];
+      // dbg(s,c,cur,cnt[cur]);
+      if(cnt[cur]<=1)break;
+      mx++;
+    }
+    ps(mx);
+  }
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
+
+
+
+
+
 
 
 

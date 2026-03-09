@@ -69,18 +69,41 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
-void solve(int caso){
+vi pre(string &s){
+  int n = sz(s);
+  vi pi(n);
+  fore(i,n-1){
+    int j = pi[i-1];
+    while(j>0 and s[i]!=s[j])j=pi[j-1];
+    if(s[i]==s[j])j++;
+    pi[i] = j; 
+  }
+  return pi;
+}
 
+void solve(int caso){
+  string a,b;
+  read(a,b);
+  string c = b+"#"+a;
+  vi fx = pre(c);
+  int ans = 0;
+  for(int e: fx)ans += (sz(b)==e);
+  ps(ans);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
+
+
+
+
+
 
 
 

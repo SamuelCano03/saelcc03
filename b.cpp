@@ -67,10 +67,77 @@ template <class T> void ps(set<T> &v) {for(auto& x : v) pr(x, ' '); ps();}
 template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
-int tc=1,n,m;
+int tc=1,n,m,l;
 
+void solve2(int caso){
+  read(n,m,l);
+  vi v(n),w(m); read(v);
+  int pre = 0;
+  int tot =0;
+  if(n+1<m) m = n+1;
+  if(m==1)return ps(l-v.back());
+  fori(i,n){
+    int e = v[i];
+    int diff = e-pre;
+    if(n-i<m){
+      // delete one animatronic and fill time on others
+      tot += diff;
+      tot -= tot/m + 1*(tot%m!=0);
+      m--;
+      pre = e;
+      continue;
+    }
+    // keep filling the reset ones and try to keep every anymatronic with the same time
+    tot += diff;
+    tot -= tot/m + 1*(tot%m!=0);
+    pre = e;
+  }
+  tot += l-v.back();
+  ps(tot);
+}// it didnt work:')
+//
 void solve(int caso){
-
+  read(n,m,l);
+  vi v(n); read(v);
+  int pre = 0;
+  if(n+1<m) m = n+1;
+  if(m==1)return ps(l-v.back());
+  vi w(m);
+  fori(i,n){
+    int e = v[i];
+    int diff = e-pre;
+    int cnt = min(m,n-i+1);
+    sort(all(w));
+    int start=m-cnt;
+    for(int j=start;j<m-1;j++){
+      int count = j-start+1;
+      int req = count*(w[j+1]-w[j]);
+      if(diff>=req){
+        diff-=req;
+        for(int k=start;k<=j;k++)w[k]=w[j+1];
+      }else{
+        int add = diff/count;
+        int rem = diff%count;
+        for(int k=start;k<=j;k++)w[k]+=add;
+        for(int k=0;k<rem;k++)w[j-k]++;
+        diff=0;
+        break;
+      }
+    }
+    if(diff>0){
+      int add=diff/cnt;
+      int rem=diff%cnt;
+      for(int k=start;k<m;k++)w[k]+=add;
+      fori(k,rem)w[m-1-k]++;
+    }
+    sort(all(w));
+    w.back()=0;
+    pre = e;
+  }
+  sort(all(w));
+  w.back()+=l-v.back();
+  sort(all(w));
+  ps(w.back());
 }
 
 
@@ -81,11 +148,6 @@ int32_t main(){
     solve(caso);
   }
 }
-
-
-
-
-
 
 
 

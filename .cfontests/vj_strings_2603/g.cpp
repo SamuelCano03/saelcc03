@@ -68,15 +68,65 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi zf(string  &s){
+  int n = sz(s);
+  vi z(n);
+  z[0]=n;
+  int l=0,r=0;
+  fore(i,n-1){
+    if(i<r)z[i]=min(z[i-l],r-i);
+    while(i+z[i]<n and s[z[i]]==s[i+z[i]])z[i]++;
+    if(i+z[i]>r){
+      l=i;
+      r=i+z[i];
+    }
+  }
+  return z;
+}
+vi kmp(string &s){
+  int n = sz(s);
+  vi pi(n);
+  fore(i,n-1){
+    int j=pi[i-1];
+    while(j>0 and s[i]!=s[j])j=pi[j-1]; 
+    if(s[i]==s[j])j++;
+    pi[i] = j; 
+  }
+  return pi;
+}
 void solve(int caso){
-
+  string s;
+  read(s);
+  vi z = zf(s);
+  n = s.size();
+  vi geq(n+1);
+  fori(i,n)++geq[z[i]];
+  fora(i,n)geq[i]+=geq[i+1];
+  vii ans;
+  fore(k,n){
+    if(z[n-k]==k)ans.emplace_back(k,geq[k]);
+  }
+  ps(sz(ans));
+  for(auto e: ans)ps(e.ff, e.ss);
+}
+void solve2(int caso){
+  string s; read(s);
+  n=sz(s);
+  vi pi = kmp(s),mp(n+1);
+  vii vans;
+  fore(i,n-2)mp[pi[i]]++;
+  for(int i=n-1;i>0;i--)mp[pi[i-1]]+=mp[i];
+  for(int len=pi.back();len>0;len=pi[len-1])vans.pb({len,2+mp[len]});
+  reverse(all(vans));
+  vans.pb({n,1});
+  ps(sz(vans));
+  for(auto e: vans)ps(e.ff,e.ss);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  //read(tc); 
   fore(caso, tc){
     solve(caso);
   }

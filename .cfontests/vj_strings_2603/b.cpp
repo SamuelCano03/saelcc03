@@ -69,18 +69,59 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
+vi pre(const string &s){
+  int n = sz(s);
+  vi pi(n);
+  for(int i=1,j=0;i<n;i++){
+    while(j>0 and s[i]!=s[j])j=pi[j-1];
+    if(s[i]==s[j])j++;
+    pi[i] = j; 
+  }
+  return pi;
+}
+vi kmpSearch(string& T, string& P) {
+  int n = T.size(), m = P.size();
+  if(m==0) return {};
+  vi pi = pre(P);
+  vi matches;
+  int j = 0; // number of chars matched so far
+  for(int i = 0; i < n; i++){
+    while(j > 0 && T[i] != P[j])j=pi[j - 1];
+    if(T[i] == P[j]) j++;
+    if(j==m){
+      matches.push_back(i-m+1); // match starts here
+      j = pi[m-1];           // look for overlapping matches
+    }
+  }
+  return matches;
+}
 void solve(int caso){
-
+  string s; read(s);
+  vi pi = pre(s);
+  vi ans;
+  int j=pi.back();
+  // dbg(pi);
+  while(j>0 and s[j-1]==s.back()){
+    ans.pb(j);
+    j = pi[j-1];
+  }
+  sort(all(ans));
+  ps(ans);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
+
+
+
+
+
 
 
 
