@@ -73,35 +73,29 @@ void solve(int caso){
   int k;
   read(n,k,m); m--;
   vvi adj(n);
-  string s = "";
   fori(i,n-1){
     int a,b; read(a,b); a--,b--;
-    if(caso==51){
-      s+=to_string(a)+"$"+to_string(b);
-    }
     adj[a].pb(b);
     adj[b].pb(a);
   }
-  if(caso==51){cout<<n<<"$"<<k<<"$"<<m<<"$"<<s<<endl;return;}
-  vi leafs, dis(n), vis(n);
-  vis[m]=1;
-  function<void(int)> dfs = [&](int u){
+  function<int(int,int)> dfs = [&](int u, int p)->int{
+    int l1=1e9,l2=1e9;
     for(int v: adj[u]){
-      if(vis[v])continue;
-      dis[v]=dis[u]+1;
-      vis[v]=1;
-      dfs(v);
+      if(v==p)continue;
+      int guy = dfs(v,u);
+      if(guy<l2)swap(l2,guy);
+      if(l2<l1)swap(l1,l2);
+    }
+    if(l1==1e9)return 0;
+    else if(l2==1e9)return 1+l1;
+    else{
+      int s = 1+l1;
+      if(l1+l2<k)s=0;
+      return s;
     }
   };
-  dfs(m);
-  fori(i,n)if(sz(adj[i])==1)leafs.pb(i);
-  // dbg(dis);
-  // dbg(leafs);
-  int cnt=0;
-  for(int e: leafs){
-    if(dis[e]<=k)cnt++;
-  }
-  if(cnt>1)yesi;
+  bool fg = dfs(m,-1)==0;
+  if(fg)yesi;
   else nosi;
 }
 
