@@ -1,3 +1,4 @@
+
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
@@ -68,18 +69,33 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi kmp(string &s){
+  vi pi(sz(s));
+  for(int i =1,j=0;i<sz(s);i++){
+    while(j>0 and s[i]!=s[j])j=pi[j-1];
+    if(s[i]==s[j])j++;
+    pi[i]=j;
+  }
+  return pi;
+}
+string s;
 void solve(int caso){
-
+  string z = s; reverse(all(z));
+  n=sz(s);
+  z+=s;
+  vi pi = kmp(z);
+  // dbg(z);
+  // dbg(pi);
+  int ans = n-pi.back();
+  fora(i,ans)s.pb(s[i]);
+  ps(s);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
-  fore(caso, tc){
-    solve(caso);
-  }
+  // read(tc); 
+  while(cin>>s)solve(0);
 }
 
 

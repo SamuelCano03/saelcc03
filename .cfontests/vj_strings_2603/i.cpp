@@ -1,3 +1,4 @@
+
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
@@ -68,26 +69,43 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi pre(string &s){
+  int n = sz(s);
+  vi pi(n);
+  fore(i,n-1){
+    int j = pi[i-1];
+    while(j>0 and s[i]!=s[j])j=pi[j-1];
+    pi[i] = j + (s[i]==s[j]); 
+  }
+  return pi;
+}
 void solve(int caso){
-
+  string s; read(s);
+  vi pi = pre(s);
+  int ans = pi.back();
+  mpii mp;
+  n = sz(s);
+  fore(i,n-2)mp[pi[i]]++;
+  int j = pi.back();
+  // dbg(pi);
+  // dbg(j,mp[j]);
+  while(j>0 and mp[j]==0)j=pi[j-1];
+  // while(j>0 and mp[j]==0) {dbg(j,mp[j]);j = pi[j-1];dbg(j);}
+  if(j==0) return ps("Just a legend");
+  ps(s.substr(0,j));
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
 
 
-
-
-
-
-
+// hi there
 
 
 

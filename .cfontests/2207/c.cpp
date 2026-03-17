@@ -69,8 +69,34 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
+pii fx(int hpre, int l, int r, vi&v){
+  if(l>r)return {0,0};
+  if(l==r)return {hpre-v[l],0};
+  vi pos ;
+  int hmax = 0;
+  for(int i=l;i<=r;i++)hmax=max(hmax,v[i]);
+  for(int i=l;i<=r;i++)if(v[i]==hmax)pos.pb(i);
+  if(sz(pos)==r-l+1)return {(hpre-hmax)*(r-l+1),0};
+  int a = (hpre-hmax)*(r-l+1);
+  int b = 0;
+  vii as;
+  if(l<=pos[0]-1)as.pb(fx(hmax,l,pos[0]-1,v));
+  fori(i,sz(pos)-1){
+    auto e = fx(hmax,pos[i]+1,pos[i+1]-1,v);
+    as.pb(e);
+  }
+  if(pos.back()+1<=r)as.pb(fx(hmax,pos.back()+1,r,v));
+  if(as.empty())return {a,0};
+  sort(all(as));
+  a += as.back().ff;
+  b = max(as.back().ss, sz(as)>1?as[sz(as)-2].ff:0ll);
+  return {a,b};
+}
 void solve(int caso){
-
+  read(n,m);
+  vi v(n); read(v);
+  auto [a,b] = fx(m,0,n-1,v);
+  ps(a+b);
 }
 
 

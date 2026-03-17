@@ -9,14 +9,6 @@ using namespace std;
 #define dbg(...)
 #endif
 
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
@@ -68,15 +60,28 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+int trie[100001][26];
+int cnt[100001];
+int nodos =1;
+void add(string& s){
+  int cur = 0;
+  for(char c: s){
+    int e = c-'a';
+    if(!trie[cur][c])trie[cur][c]=nodos++;
+    cur=trie[cur][c];
+    cnt[cur]++;
+  }
+}
 void solve(int caso){
+  read(n); vs v(n); read(v);
+  for(string &s: v)add(s);
 
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }

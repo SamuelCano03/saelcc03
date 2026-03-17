@@ -69,10 +69,66 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
+struct SegmentTree{
+  int n,cte;
+  function<int(int,int)> fx;
+  vi v,st;
+  SegmentTree(vi &v, int cte, function<int(int,int)> fx):v(v),cte(cte),fx(fx){
+    n = v.size();
+    st=vi(2*n+1,cte);
+    fori(i,n)update(i,v[i]);
+  }
+  void update(int id, int vl){
+    int node = id + n;
+    for(st[node]=vl,v[id]=vl;node>1;node>>=1) st[node>>1] = fx(st[node],st[node^1]);
+  }
+  int query(int l, int r){
+    int res = cte;
+    for(l+=n,r+=n+1;l<r;l>>=1,r>>=1){
+      if(l%2) res=fx(res,st[l++]);
+      if(r%2) res=fx(res,st[--r]);
+    }
+    return res;
+  }
+};
 void solve(int caso){
+  read(n,m);
+  vi v(n);
+  read(v);
+  vi a,b;
+  fori(i,n/2+n%2)a.pb(v[i]);
+  for(int i=n/2+n%2;i<n;i++)b.pb(v[i]);
+  function<int(int,int)>mini = [](int a, int b){return min(a,b);};
+  function<int(int,int)>sumi = [](int a, int b){return a+b;};
+  SegmentTree amin(a,1e10,mini);
+  SegmentTree bmin(b,1e10,mini);
+  SegmentTree asum(a,0,sumi);
+  SegmentTree bsum(b,0,sumi);
+  int na = sz(a), nb =sz(b);
+  int mina = amin.query(0, na-1);
+  int minb = bmin.query(0, nb-1);
+  int ansa=asum.query(0,na-1) - mina;
+  int ansb=bsum.query(0,nb-1) - minb;
+  // dbg(asum.query(0,na-1),mina);
+  // dbg(bsum.query(0,nb-1),minb);
+  if(n%2==0)ansa+=max(mina,minb),ansb+=min(mina,minb);
+  else ansa+=min(mina,minb),ansb+=max(mina,minb);
+  ps(ansa,ansb);
+  while(m--){
+    int x,y;
+    read(x,y);x--;
+    if(x<na)amin.update(x, y),asum.update(x, y);
+    else bmin.update(x-na, y),bsum.update(x-na, y);
+    int mina = amin.query(0, na-1);
+    int minb = bmin.query(0, nb-1);
+    int ansa=asum.query(0,na-1) - mina;
+    int ansb=bsum.query(0,nb-1) - minb;
 
+    if(n%2==0)ansa+=max(mina,minb),ansb+=min(mina,minb);
+    else ansa+=min(mina,minb),ansb+=max(mina,minb);
+    ps(ansa,ansb);
+  }
 }
-
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);

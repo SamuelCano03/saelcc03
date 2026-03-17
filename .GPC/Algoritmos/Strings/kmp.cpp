@@ -44,7 +44,7 @@ using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_or
 #define yesi ps("Yes")
 #define nosi ps("No")
 #define endl '\n'
-#define approx(a) fixed << setprecision(a)
+#define approx(a) fixed << setkmpcision(a)
 #define ff first
 #define ss second
 #define fast read(n); vi v(n); read(v)
@@ -69,7 +69,7 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
-vi pre(const string &s){
+vi kmp(const string &s){
   int n = sz(s);
   vi pi(n);
   for(int i=1,j=0;i<n;i++){
@@ -82,7 +82,7 @@ vi pre(const string &s){
 vi kmpSearch(string& T, string& P) {
   int n = T.size(), m = P.size();
   if(m==0) return {};
-  vi pi = pre(P);
+  vi pi = kmp(P);
   vi matches;
   int j = 0; // number of chars matched so far
   for(int i = 0; i < n; i++){

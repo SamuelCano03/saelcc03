@@ -70,7 +70,14 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  fast;
+  sort(all(v));
+  int ans = 0;
+  for(int i=1;i<n-1;i++){
+    ans += max(v[i]-v[0],v.back()-v[i]);
+  }
+  if(n>1)ans+=v.back()-v[0];
+  ps(ans);
 }
 
 

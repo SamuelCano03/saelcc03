@@ -1,3 +1,4 @@
+
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
@@ -8,14 +9,6 @@ using namespace std;
 #else
 #define dbg(...)
 #endif
-
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
@@ -68,15 +61,50 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+int trie[1000001][27];
+int stop[1000001];
+int nodos = 1;
+void add(string &s){
+  int cur = 0;
+  for(char c: s){
+    int e = c-'a';
+    if(!trie[cur][e])trie[cur][e]=nodos++;
+    cur = trie[cur][e];
+  }
+  stop[cur]=1;
+}
 void solve(int caso){
-
+  string s; read(s);
+  read(m); vs v(m); read(v);
+  memset(trie,0,sizeof trie);
+  memset(stop,0,sizeof stop);
+  n = sz(s);
+  vvi dp(n,vi(n));
+  vi ans(n);
+  for(string &e: v)add(e);
+  fori(i,n){
+    int cur = 0;
+    bool fg = true;
+    for(int j=i;j<n;j++){
+      int e = s[j]-'a';
+      if(!trie[cur][e]){fg=false;break;}
+      cur = trie[cur][e];
+      if(stop[cur])dp[i][j]=1;
+    }
+  }
+  int mod = 1e9+7;
+  fori(i,n){
+    fori(j,i+1){
+      (ans[i]+=(j==0?dp[0][i]:ans[j-1]*dp[j][i]))%=mod;
+    }
+  }
+  ps(ans.back());
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }

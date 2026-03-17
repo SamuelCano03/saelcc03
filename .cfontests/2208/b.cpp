@@ -70,9 +70,31 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  int k,p;
+  read(n,k,p,m);
+  vii v;
+  fori(i,n){
+    int e; read(e);
+    v.pb({i==p-1,-e});
+  }
+  int ans=0;
+  if(k==n)return ps(m/-v[p-1].ss);
+  priority_queue<pii>pq;
+  queue<pii>q;
+  fori(i,k)pq.push(v[i]);
+  for(int i=k;i<n;i++)q.push(v[i]);
+  while(m>0){
+    pii e=pq.top();
+    pq.pop();
+    if(m<-e.ss)break;
+    m+=e.ss;
+    if(e.ff)ans++;
+    pq.push(q.front());
+    q.push(e);
+    q.pop();
+  }
+  ps(ans);
 }
-
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);

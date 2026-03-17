@@ -70,7 +70,39 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  int k;
+  read(n,k,m); m--;
+  vvi adj(n);
+  string s = "";
+  fori(i,n-1){
+    int a,b; read(a,b); a--,b--;
+    if(caso==51){
+      s+=to_string(a)+"$"+to_string(b);
+    }
+    adj[a].pb(b);
+    adj[b].pb(a);
+  }
+  if(caso==51){cout<<n<<"$"<<k<<"$"<<m<<"$"<<s<<endl;return;}
+  vi leafs, dis(n), vis(n);
+  vis[m]=1;
+  function<void(int)> dfs = [&](int u){
+    for(int v: adj[u]){
+      if(vis[v])continue;
+      dis[v]=dis[u]+1;
+      vis[v]=1;
+      dfs(v);
+    }
+  };
+  dfs(m);
+  fori(i,n)if(sz(adj[i])==1)leafs.pb(i);
+  // dbg(dis);
+  // dbg(leafs);
+  int cnt=0;
+  for(int e: leafs){
+    if(dis[e]<=k)cnt++;
+  }
+  if(cnt>1)yesi;
+  else nosi;
 }
 
 

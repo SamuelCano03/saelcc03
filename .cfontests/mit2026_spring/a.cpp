@@ -70,7 +70,16 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  read(n);
+  string s;
+  read(s);
+  int id = s.find('M');
+  string a = s.substr(id) + s.substr(0,id);
+  dbg(a);
+  string b = "M";
+  fori(i,n)b+="IT";
+  if(a==b)ps(id!=0);
+  else ps(-1);
 }
 
 

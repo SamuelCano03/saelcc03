@@ -1,6 +1,7 @@
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
+#include <cstring>
 using namespace std;
 
 #ifdef LOCAL
@@ -9,19 +10,19 @@ using namespace std;
 #define dbg(...)
 #endif
 
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
+// #include <ext/pb_ds/assoc_container.hpp>
+// #include <ext/pb_ds/tree_policy.hpp>
+// using namespace __gnu_pbds;
+// template <class T>
+// using ordered_set = __gnu_pbds::tree<T, __gnu_pbds::null_type, less<T>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update>;
+// template <class T>
+// using ordered_multi_set = __gnu_pbds::tree<T, __gnu_pbds::null_type, less_equal<T>, __gnu_pbds::rb_tree_tag, __gnu_pbds::tree_order_statistics_node_update>;
+//
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
 #define foro(i,a,b) for(int i=a;i<(int)b;i++)
-#define int long long
+// #define int long long
 #define inf 1e9
 #define INF 1e18
 #define pii pair<int,int>
@@ -68,35 +69,60 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+int ttrie[10000001][2];
+int cnt[10000001];
+int nodos =1;
+vi getBits(int e){
+  vi ret;
+  while(e>0)ret.pb(e&1), e>>=1;
+  while(sz(ret)<30)ret.pb(0);
+  reverse(all(ret));
+  return ret;
+}
+void add(int e, int rem){
+  vi bits = getBits(e);
+  int cur = 0;
+  for(int bit: bits){
+    if(!ttrie[cur][bit])ttrie[cur][bit]=nodos++;
+    cur = ttrie[cur][bit];
+    cnt[cur] += rem;
+  }
+}
 void solve(int caso){
-
+  memset(ttrie, 0, sizeof ttrie);
+  memset(cnt, 0, sizeof cnt);
+  read(n);
+  add(0,1);
+  while(n--){
+    char c; int e;
+    read(c,e);
+    if(c=='+' or c=='-') add(e,c=='+'?1:-1);
+    else{
+      vi bits = getBits(e);
+      int cur = 0, ans = 0;
+      for(int bit: bits){
+        ans <<= 1;
+        if(ttrie[cur][!bit] and cnt[ttrie[cur][!bit]]){
+          cur = ttrie[cur][!bit];
+          ans ++;
+        }
+        else{
+          cur = ttrie[cur][bit];
+        }
+     }
+      ps(ans);
+    }
+    // dbg(nodos);
+    // dbg(ttrie[1],ttrie[2],ttrie[3]);
+  }
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

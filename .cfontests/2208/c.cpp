@@ -70,7 +70,22 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  read(n);
+  vii v(n);
+  fori(i,n)read(v[i].ff,v[i].ss);
+  // int lim=min(n,500ll);
+  // vector<double> dp(lim+1,-1.0),s(lim+1);
+  // dp[0]=0.0;
+  // s[0]=1.0;
+  double dp = 0.0;
+  fora(i,n){
+    double c=v[i].ff;
+    double f=v[i].ss;
+    double meh=dp;
+    double yes=c+dp*(1.0-f/100.0);
+    dp=max(yes,meh);
+  }
+  cout<<approx(10)<<dp<<'\n';
 }
 
 

@@ -70,7 +70,13 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  read(n);
+  mpii mp;
+  fori(i,n)fori(j,n){read(m);mp[m]++;}
+  for(auto [key,val]: mp){
+    if(val>n*(n-1))return nosi;
+  }
+  yesi;
 }
 
 

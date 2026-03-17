@@ -68,15 +68,38 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+vi kmp(vi& v){
+  int n =sz(v);
+  vi pi(n);
+  for(int i=1,j=0;i<n;i++){
+    while(j>0 and v[j]!=v[i])j=pi[j-1];
+    if(v[j]==v[i])j++;
+    pi[i]=j;
+  }
+  return pi;
+}
 void solve(int caso){
-
+  read(n,m);
+  vi v(n),w(m); read(v,w);
+  if(m==1)return ps(n);
+  vi a,b;
+  fori(i,n-1)a.pb(v[i+1]-v[i]);
+  fori(i,m-1)b.pb(w[i+1]-w[i]);
+  int cnt = 0;
+  vi pi = kmp(b);
+  int len = 0;
+  for(int i=0;i<n-1;i++){
+    while(len>0 and b[len]!=a[i])len=pi[len-1];
+    if(b[len]==a[i])len++;
+    if(len==sz(b))len=pi[len-1],cnt++;
+  }
+  ps(cnt);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }
