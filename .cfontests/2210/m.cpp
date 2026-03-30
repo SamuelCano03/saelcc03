@@ -4,7 +4,7 @@
 using namespace std;
 
 #ifdef LOCAL
-#include ".debug.cpp"
+#include "debug.cpp"
 #else
 #define dbg(...)
 #endif
@@ -69,14 +69,60 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
-void solve(int caso){
+vi kmp(string &s){
+  int n = sz(s);
+  vi pi(n);
+  fore(i,n-1){
+    int j= pi[i-1];
+    while(j>0 and s[i]!=s[j])j=pi[j-1];
+    if(s[i]==s[j])j++;
+    pi[i]=j;
+  }
+  return pi;
+}
 
+string a,b; 
+vvi match,dp; vi pi;
+int comp(int ch, int k){
+  int &ret = match[ch][k];
+  if(ret!=-1)return ret;
+  while(k>0 and b[k]-'a'!=ch){
+    k=pi[k-1];
+  }
+  if(b[k]-'a'==ch)k++;
+  return ret=k;
+
+}
+int cal(int i, int k){
+  if(i==n)return 0;
+  int &ret = dp[i][k];
+  if(ret!=-1)return ret;
+  if(a[i]!='?'){
+    k=comp(a[i]-'a',k);
+    if(k==m)ret = 1 + cal(i+1,pi[k-1]);
+    else ret = cal(i+1,k);
+  }
+  else{
+    fori(j,26){
+      int nk = comp(j,k);
+      if(nk==m)ret=max(ret,1+cal(i+1,pi[nk-1]));
+      else ret = max(ret,cal(i+1,nk));
+    }
+  }
+  return ret;
+}
+void solve(int caso){
+  read(a,b);
+  n=sz(a),m=sz(b);
+  pi = kmp(b);
+  dp=vvi(n,vi(m,-1)), match=vvi(26,vi(m,-1));
+  ps(cal(0,0));
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  read(tc); 
+  // read(tc); 
   fore(caso, tc){
     solve(caso);
   }

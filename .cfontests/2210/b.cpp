@@ -70,7 +70,24 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 int tc=1,n,m;
 
 void solve(int caso){
-
+  fast;
+  vi w(n),x(n);
+  fori(i,n){
+    if(v[i]<=i+1)w[i]=1;
+    else x[i]=1;
+  }
+  vi u = w;
+  for(int i=1;i<n;i++)w[i]+=w[i-1],x[i]+=x[i-1];
+  dbg(v,u,w);
+  int ans = w.back();
+  fori(i,n){
+    if(u[i]==0){
+      int p = v[i]-1;
+      ans = max(ans, (i>0?w[i-1]:0) + 1 + w[p-1]-w[i]);
+      dbg(ans);
+    }
+  }
+  ps(ans);
 }
 
 

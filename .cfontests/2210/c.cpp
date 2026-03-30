@@ -22,7 +22,7 @@ using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_or
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
 #define foro(i,a,b) for(int i=a;i<(int)b;i++)
 #define int long long
-#define inf 1e9
+#define inf 1e10
 #define INF 1e18
 #define pii pair<int,int>
 #define piii tuple<int,int,int>
@@ -69,10 +69,45 @@ template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); 
 
 int tc=1,n,m;
 
+struct SegmentTree{
+  int n,cte;
+  function<int(int,int)> fx;
+  vi v,st;
+  SegmentTree(vi &v, int cte, function<int(int,int)> fx):v(v),cte(cte),fx(fx){
+    n = v.size();
+    st=vi(2*n+1,cte);
+    fori(i,n)update(i,v[i]);
+  }
+  void update(int id, int vl){
+    int node = id + n;
+    for(st[node]=vl,v[id]=vl;node>1;node>>=1) st[node>>1] = fx(st[node],st[node^1]);
+  }
+  int query(int l, int r){
+    int res = cte;
+    for(l+=n,r+=n+1;l<r;l>>=1,r>>=1){
+      if(l%2) res=fx(res,st[l++]);
+      if(r%2) res=fx(res,st[--r]);
+    }
+    return res;
+  }
+};
 void solve(int caso){
-
+  read(n); vi a(n),b(n);
+  read(a,b);
+  SegmentTree seg(a,0,[](int a, int b){return __gcd(a,b);});
+  int ans = 0;
+  fori(i,n){
+    int left = i>0?seg.query(i-1,i):1e10;
+    int rigt = i+1<n?seg.query(i,i+1):1e10;
+    // dbg(i,a[i],left,rigt);
+    int cmp = 0;
+    if(left==1e10)cmp = rigt;
+    else if(rigt==1e10)cmp=left;
+    else cmp = lcm(left,rigt);
+    if(cmp!=a[i])ans++,a[i]=cmp;
+  }
+  ps(ans);
 }
-
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);

@@ -68,9 +68,45 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+#define gcd __gcd
 void solve(int caso){
-
+  read(n); vi a(n),b(n);
+  read(a,b);
+  int ans = 0;
+  vi primes = {1,2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89};
+  m = sz(primes);
+  vvi dp(n,vi(m,-1e9));
+  vi c(n);
+  fori(i,n){
+    int lf = i==0?  1:gcd(a[i-1],a[i]);
+    int rt = i==n-1?1:gcd(a[i],a[i+1]);
+    c[i] = lf*rt/gcd(lf,rt);
+    if(c[i]>b[i])c[i]=a[i];
+  }
+  dp[0][0] = (c[0]==a[0]?0:1);
+  fore(i,m-1){
+    int val = c[0]*primes[i];
+    if(val<=b[0] and gcd(val,c[1])==gcd(a[0],a[1]) and val!=a[0])dp[0][i]=1;
+  }
+  fore(i,n-1){
+    fori(j,m){
+      fori(k,m){
+        if(j==0){// keep value unchanged 
+          dp[i][j]=max(dp[i][j], dp[i-1][k] + (c[i]==a[i]?0:1));
+          continue;
+        }
+        int val1 = c[i]*primes[j];
+        int val2 = c[i-1]*primes[k];
+        if(val1<=b[i] and gcd(val1,val2)==gcd(c[i-1],c[i]) and val1!=a[i]){
+          if(i<n-1){
+            if(gcd(val1,c[i+1])==gcd(c[i],c[i+1]))dp[i][j]=max(dp[i][j],dp[i-1][k]+1);
+          }
+          else dp[i][j]=max(dp[i][j],dp[i-1][k]+1);
+        }
+      }
+    }
+  }
+  ps(max(0ll,*max_element(all(dp.back()))));
 }
 
 

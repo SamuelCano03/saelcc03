@@ -9,14 +9,6 @@ using namespace std;
 #define dbg(...)
 #endif
 
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
-
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
@@ -68,9 +60,65 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
+const int mxn = 100001;
+int trie[mxn][26];
+int cnt[mxn],kmp[mxn],chr[mxn], stp[mxn],dct[mxn];
+int nodos = 1;
+void add(string &s){
+  chr[0]=-1;
+  int cur = 0;
+  for(char c: s){
+    int e= c-'a';
+    if(!trie[cur][e])trie[cur][e]=nodos++;
+    cur = trie[cur][e];
+    cnt[cur]++;
+    chr[cur]=e;
+  }
+  stp[cur]=1;
+}
+void tkmp(){
+  queue<int>q; 
+  fori(i,26)if(trie[0][i])q.push(trie[0][i]);
+  while(q.size()){
+    int u = q.front(); q.pop();
+    fori(i,26){
+      if(!trie[u][i])continue;
+      int v = trie[u][i];
+      int len = kmp[u];
+      while(len>0 and !trie[len][i])len=kmp[len];
+      len = trie[len][i]; //instead of len++ 
+      kmp[v]=len;
+      dct[v] = stp[len]?len:dct[len];
+      q.push(v);
+    }
+  }
+}
+void pt(int node){
+  int cur=0;
 
+}
 void solve(int caso){
-
+  string s;
+  read(n,s);
+  vs v(n); read(v);
+  for(string &e: v)add(e);
+  tkmp();
+  int cur = 0,ans=0;
+  si st;
+  for(char c: s){
+    int e =c-'a';
+    while(cur>0 and !trie[cur][e])cur = kmp[cur];
+    cur = trie[cur][e];
+    int ax = cur;
+    while(ax){
+      ans+=stp[ax];
+      if(stp[ax])st.insert(ax);
+      ax=dct[ax];
+    }
+  }
+  ps(ans);
+  ps(sz(st));
+  dbg(st);
 }
 
 

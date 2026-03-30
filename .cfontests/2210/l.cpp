@@ -1,27 +1,20 @@
+
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
 using namespace std;
 
 #ifdef LOCAL
-#include ".debug.cpp"
+#include "debug.cpp"
 #else
 #define dbg(...)
 #endif
-
-#include <ext/pb_ds/assoc_container.hpp>
-#include <ext/pb_ds/tree_policy.hpp>
-using namespace __gnu_pbds;
-template <class T>
-using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
-template <class T>
-using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
 
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
 #define foro(i,a,b) for(int i=a;i<(int)b;i++)
-#define int long long
+// #define int long long
 #define inf 1e9
 #define INF 1e18
 #define pii pair<int,int>
@@ -68,9 +61,50 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-
+const int mxn = 1e6*30;
+int trie[mxn][2];
+int cnt[mxn];
+int id[mxn];
+int nodos = 1;
+void add(int e, int j){
+  int cur = 0;
+  fora(i,30){
+    int bit = (e>>i) & 1;
+    if(!trie[cur][bit]) trie[cur][bit]=nodos++;
+    cur = trie[cur][bit];
+    cnt[cur]++;
+    id[cur] = max(id[cur],j);
+  }
+}
 void solve(int caso){
-
+  read(n,m);
+  fori(i,n*30)trie[i][0]=trie[i][1]=cnt[i]=id[i]=0;
+  nodos = 1;
+  vi v(n); read(v);
+  if(m==0)return ps(1);
+  // add(0,0);
+  int ans = 1e9;
+  m--;
+  fore(j,n){
+    int e = v[j-1];
+    int cur = 0;
+    fora(i,30){
+      int bit = (e>>i) & 1;
+      int bitk =(m>>i) & 1;
+      if(bitk==0){
+        if(trie[cur][bit^1]) ans = min(ans,j-id[trie[cur][bit^1]]+1);
+        if(!trie[cur][bit])break;
+        cur = trie[cur][bit];
+      } 
+      else{
+        if(!trie[cur][bit^1])break;
+        cur = trie[cur][bit^1];
+      }
+    }
+    add(e,j);
+  }
+  if(ans==1e9)ans=-1;
+  ps(ans);
 }
 
 
@@ -81,17 +115,4 @@ int32_t main(){
     solve(caso);
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
