@@ -68,14 +68,13 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
-#define gcd __gcd
 void solve(int caso){
   read(n); vi a(n),b(n);
   read(a,b);
   int ans = 0;
-  vi primes = {1,2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73, 79, 83, 89};
+  vi primes = {1,2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71, 73};
   m = sz(primes);
-  vvi dp(n,vi(m,-1e9));
+  vvi dp(n,vi(m,-1e18));
   vi c(n);
   fori(i,n){
     int lf = i==0?  1:gcd(a[i-1],a[i]);
