@@ -13,7 +13,7 @@ newPath="$parentDir/$coder"
 
 if [[ "$oldPath" != "$newPath" ]]; then
   mv "$oldPath" "$newPath"
-  echo "Repo renombrado B)"
+  echo "Repo renamed B)"
 fi
 
 cd $newPath
