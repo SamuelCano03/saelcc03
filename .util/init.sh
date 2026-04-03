@@ -21,9 +21,9 @@ cd $newPath
 chmod +x .util/setup.sh .util/gpc.sh
 
 echo "\n# --- CP Aliases for $coder ---" >> ~/.zshrc
-echo "alias setup='$newPath/.util/setup'" >> ~/.zshrc
-echo "alias gpc='$newPath/.util/gpc'" >> ~/.zshrc
-
+echo "alias setup='$newPath/.util/setup.sh'" >> ~/.zshrc
+echo "alias gpc='$newPath/.util/gpc.sh'" >> ~/.zshrc
+echo "alias cf='$newPath/.util/cf.sh'" >> ~/.zshrc
 echo "------------------------------------------"
 echo "Welcome to the family, warrior $coder"
 echo "Aliases 'setup' and 'gpc' added to your .zshrc"
