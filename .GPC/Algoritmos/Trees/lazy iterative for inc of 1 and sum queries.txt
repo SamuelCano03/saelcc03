@@ -1,0 +1,107 @@
+#include<bits/stdc++.h>
+
+using namespace std;
+#define fori(i,n) for(int i=0;i<n;i++)
+#define fore(i,n) for(int i=1;i<=n;i++)
+#define fora(i,n) for(int i=n-1;i>=0;i--)
+#define int long long
+#define pii pair<int,int>
+#define vi vector<int>
+#define vvi vector<vector<int>>
+#define vii vector<pair<int,int>>
+#define vb vector<bool>
+#define vs vector<string>
+#define si set<int>
+#define mpii map<int,int>
+#define pb push_back
+#define all(v) v.begin(),v.end()
+#define sz(x) x.size()
+#define endl '\n'
+#define ff first
+#define ss second
+template <class T> void read(vector<T> &v);
+template <class F, class S> void read(pair<F, S> &p);
+template <class T, size_t Z> void read(array<T, Z> &a);
+template <class T> void read(T &x) {cin >> x;}
+template <class R, class... T> void read(R& r, T&... t){read(r); read(t...);};
+template <class T> void read(vector<T> &v) {for(auto& x : v) read(x);}
+template <class F, class S> void read(pair<F, S> &p) {read(p.ff, p.ss);}
+template <class T, size_t Z> void read(array<T, Z> &a) { for(auto &x : a) read(x); }
+
+template <class F, class S> void pr(const pair<F, S> &x);
+template <class T> void pr(const T &x) {cout << x;}
+template <class R, class... T> void pr(const R& r, const T&... t) {pr(r); pr(t...);}
+template <class F, class S> void pr(const pair<F, S> &x) {pr("{", x.ff, ", ", x.ss, "}\n");}
+void ps() {pr("\n");}
+template <class T> void ps(const T &x) {pr(x); ps();}
+template <class T> void ps(vector<T> &v) {for(auto& x : v) pr(x, ' '); ps();}
+template <class T, size_t Z> void ps(const array<T, Z> &a) { for(auto &x : a) pr(x, ' '); ps(); }
+template <class F, class S> void ps(const pair<F, S> &x) {pr(x.ff, ' ', x.ss); ps();}
+template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
+
+int tc=1,n,m,t,q,curpos;
+vi st,lz,parent, depth, pos, arr, heavy, head;
+int h = sizeof(int) * 8 - __builtin_clz(n);
+
+int fx(int a, int b){return a+b;}
+int lg2(int x){ return 63 - __builtin_clzll(x);}
+void apply(int node, int value) {
+  st[node] += value;
+  if (node < n) lz[node] += value;
+}
+void build(int node) {
+  int len = 1<<(lg2(n) - lg2(node)); // build from bottom to top
+  while (node > 1) node >>= 1, st[node] = fx(st[node<<1], st[node<<1|1]) + len*lz[node];
+}
+void push(int node) {
+  for (int s = h; s > 0; --s) {
+    int i = node >> s;
+    if (lz[i] != 0) { //push to children
+      apply(i<<1, lz[i]);
+      apply(i<<1|1, lz[i]);
+      lz[i] = 0;
+    }
+  }
+}
+void update(int l, int r, int value) {
+  l += n, r += n+1;
+  int l0 = l, r0 = r;
+  for (; l < r; l >>= 1, r >>= 1) {
+    if (l&1) apply(l++, value);
+    if (r&1) apply(--r, value);
+  }
+  build(l0);
+  build(r0 - 1);
+}
+int query(int l, int r) {
+  l += n, r += n+1;
+  push(l);
+  push(r - 1);
+  int res = -2e9;
+  for (; l < r; l >>= 1, r >>= 1) {
+    if (l&1) res = fx(res, st[l++]);
+    if (r&1) res = fx(st[--r], res);
+  }
+  return res;
+}
+void solve(){
+  n = 4;
+  int lg = ceil(log2(n));
+  n = 1<<lg;
+  st = lz = vi(2*n,0);
+  update(1,2,1);
+  update(2,3,1);
+  ps(query(2,3));
+  ps(query(1,1));
+  /*ps(query(0,3));*/
+  fore(i,2*n-1)cout<<i<<' ';ps();
+  fore(i,2*n-1)cout<<st[i]<<' ';ps();
+  fore(i,2*n-1)cout<<lz[i]<<' ';ps();
+}
+int32_t main(){
+  ios::sync_with_stdio(false); cin.tie(0);
+  /*read(tc); */
+  while(tc--){
+    solve();
+  }
+}
