@@ -12,6 +12,6 @@ for letter in {a..g}; do
 done
 
 # Golang setup
-cp $REPO_ROOT/.golang/template" $REPO_ROOT/.golang/main.go"
+cp "$REPO_ROOT/.golang/template" "$REPO_ROOT/.golang/main.go"
 
 echo "All done sir $coder"
