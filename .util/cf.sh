@@ -7,6 +7,6 @@ mkdir -p .cfontests/"$1"
 
 mv *.cpp .cfontests/"$1"/ 2>/dev/null
 
-$(dirname "$0")/setup.sh
+$(dirname "$0")/setup.sh > /dev/null
 
 echo "Congrats! Now everyone knows you participated on $1 🤓"
