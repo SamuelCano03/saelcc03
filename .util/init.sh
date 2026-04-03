@@ -2,7 +2,7 @@
 
 oldPath=$(pwd)
 parentDir=$(dirname "$oldPath")
-echo "What's your warrrior name? (cf handle)"
+echo "What's your warrior name? (cf handle)"
 read coder
 if [[ -z "$coder" ]]; then
   echo "Empty name. Funny eh? I'll delete your root directory..."
