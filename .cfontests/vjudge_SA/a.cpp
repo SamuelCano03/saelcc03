@@ -3,11 +3,11 @@
 #include<bits/stdc++.h>
 using namespace std;
 
-// #ifdef LOCAL
-// #include ".debug.cpp"
-// #else
-// #define dbg(...)
-// #endif
+#ifdef LOCAL
+#include ".debug.cpp"
+#else
+#define dbg(...)
+#endif
 
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -75,36 +75,36 @@ struct SuffixArray{
   SuffixArray(string &s):s(s){
     n = s.size();
     sa_build();
-    rank = vi(n);
+    rank=vi(n);
     fori(i,n)rank[p[i]]=i;
     lcp_build();
   }
   void sa_build(){
-    s+="$"; n++;
+    s+="$";n++;
     vi cnt(max(256ll,n)); p=c=vi(n);
     int cls = 1;
     fori(i,n)cnt[s[i]]++;
     partial_sum(all(cnt),cnt.begin());
-    fori(i,n) p[--cnt[s[i]]] = i;
-    fore(i,n-1) {
+    fori(i,n)p[--cnt[s[i]]]=i;
+    fore(i,n-1){
       if(s[p[i]]!=s[p[i-1]])cls++;
       c[p[i]]=cls-1;
-    } 
-    for(int k=0;(1<<k)<n;k++){// 2^k = 2^(k-1) + 2^(k-1)
+    }// 0-th iteration. k starts 0 but is 1th iter
+    for(int k=0;(1<<k)<n;k++){// so is ceil(lg(n))+1 iters
       vi pn(n),cn(n);
-      fori(i,n) pn[i] = p[i]-(1<<k) + n*(p[i]<(1<<k));// now pn is ordered by the second half
+      fori(i,n)pn[i]=p[i]-(1<<k) + n*(p[i]<(1<<k));
       fill(cnt.begin(),cnt.begin()+cls,0);
-      fori(i,n) cnt[c[pn[i]]]++;//counting sort for first half
+      fori(i,n)cnt[c[pn[i]]]++;
       partial_sum(cnt.begin(),cnt.begin()+cls,cnt.begin());
-      fora(i,n) p[--cnt[c[pn[i]]]] = pn[i]; //fora to make it stable
-      cls = 1;
-      for(int i=1;i<n;i++){
-        pii a = {c[p[i]], c[(p[i]+(1<<k))%n]};
-        pii b = {c[p[i-1]], c[(p[i-1]+(1<<k))%n]};
-        if(a!=b) cls++;
-        cn[p[i]] = cls-1;
+      fora(i,n)p[--cnt[c[pn[i]]]]=pn[i];
+      cls=1;
+      fore(i,n-1){
+        pii a = {c[p[i]],c[(p[i]+(1<<k))%n]};
+        pii b = {c[p[i-1]],c[(p[i-1]+(1<<k))%n]};
+        if(a!=b)cls++;
+        cn[p[i]]=cls-1;
       }
-      c = cn;
+      c=cn;
     }
     p.erase(p.begin());
     s.pop_back(); n--;
@@ -113,34 +113,63 @@ struct SuffixArray{
     lcp = vi(n-1);
     for(int i=0,k=0;i<n;i++){
       if(rank[i]==n-1){k=0;continue;}
-      int j = p[rank[i]+1];
+      int j=p[rank[i]+1];
       while(i+k<n and j+k<n and s[i+k]==s[j+k])k++;
       lcp[rank[i]]=k;
       if(k)k--;
     }
   }
-
 };
-
-void solve(){
-  string s = "abcacabacd";
-  SuffixArray sa(s);
-  vs v;
-  fori(i,sz(s))ps(s.substr(i)),v.pb(s.substr(i));
-  sort(all(v));
-  ps("#####");
-  for(auto e: v)ps(e);
-  ps(sa.s);
-  ps(sa.p);
-  ps(sa.rank);
-  ps(sa.lcp);
+void solve(int caso){
+  while(cin>>n){
+    if(n==0)break;
+    vi v(n); read(v);
+    string s;
+    vi w;
+    fori(i,n-1)w.pb(v[i+1]-v[i]);
+    // dbg(w); return;
+    dbg(w);
+    int mn = *min_element(all(w));
+    for(int &e: w)e+=abs(mn)+1;
+    // dbg(w); return;
+    for(int e: w)s.pb('$'+e);
+    // fori(i,n-1)s.pb('$'+v[i+1]-v[i]+1);
+    n--;
+    SuffixArray sa(s);
+    ps(sa.s);
+    ps(sa.p);
+    ps(sa.rank);
+    ps(sa.lcp);
+    if(*max_element(all(sa.lcp))<4){ps(0);continue;}
+    int ans = 0;
+    dbg(n,sz(sa.lcp),sz(sa.p));
+    fori(i,n-1){
+      if(sa.lcp[i]<4)continue;
+      ans = max(ans, min(sa.lcp[i],abs(sa.p[i+1]-sa.p[i])));
+    }
+    ps(ans+1);
+  }
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  /*read(tc); */
-  while(tc--){
-    solve();
+  // read(tc); 
+  fore(caso, tc){
+    solve(caso);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+

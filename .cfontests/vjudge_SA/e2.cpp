@@ -1,13 +1,14 @@
+
 /***--_saelcc03_--***/
 
 #include<bits/stdc++.h>
 using namespace std;
 
-// #ifdef LOCAL
-// #include ".debug.cpp"
-// #else
-// #define dbg(...)
-// #endif
+#ifdef LOCAL
+#include ".debug.cpp"
+#else
+#define dbg(...)
+#endif
 
 #include <ext/pb_ds/assoc_container.hpp>
 #include <ext/pb_ds/tree_policy.hpp>
@@ -68,6 +69,7 @@ template <class T> void ps(const T &x) {pr(x); ps();}
 template <class R, class... T> void ps(const R& r,  const T &...t) {pr(r, ' '); ps(t...);}
 
 int tc=1,n,m;
+
 struct SuffixArray{
   string s;
   int n;
@@ -90,13 +92,13 @@ struct SuffixArray{
       if(s[p[i]]!=s[p[i-1]])cls++;
       c[p[i]]=cls-1;
     } 
-    for(int k=0;(1<<k)<n;k++){// 2^k = 2^(k-1) + 2^(k-1)
+    for(int k=0;(1<<k)<n;k++){
       vi pn(n),cn(n);
-      fori(i,n) pn[i] = p[i]-(1<<k) + n*(p[i]<(1<<k));// now pn is ordered by the second half
+      fori(i,n) pn[i] = p[i]-(1<<k) + n*(p[i]<(1<<k));
       fill(cnt.begin(),cnt.begin()+cls,0);
-      fori(i,n) cnt[c[pn[i]]]++;//counting sort for first half
+      fori(i,n) cnt[c[pn[i]]]++;
       partial_sum(cnt.begin(),cnt.begin()+cls,cnt.begin());
-      fora(i,n) p[--cnt[c[pn[i]]]] = pn[i]; //fora to make it stable
+      fora(i,n) p[--cnt[c[pn[i]]]] = pn[i];
       cls = 1;
       for(int i=1;i<n;i++){
         pii a = {c[p[i]], c[(p[i]+(1<<k))%n]};
@@ -107,6 +109,7 @@ struct SuffixArray{
       c = cn;
     }
     p.erase(p.begin());
+    c.erase(c.begin());
     s.pop_back(); n--;
   }
   void lcp_build(){
@@ -119,28 +122,77 @@ struct SuffixArray{
       if(k)k--;
     }
   }
-
 };
-
-void solve(){
-  string s = "abcacabacd";
-  SuffixArray sa(s);
-  vs v;
-  fori(i,sz(s))ps(s.substr(i)),v.pb(s.substr(i));
-  sort(all(v));
-  ps("#####");
-  for(auto e: v)ps(e);
-  ps(sa.s);
-  ps(sa.p);
-  ps(sa.rank);
-  ps(sa.lcp);
+struct Rmq{
+  vvi st;
+  vi lg;
+  int n;
+  Rmq(vi& v){
+    n=sz(v);
+    lg.resize(n+1);
+    lg[1]=0;
+    for(int i=2;i<=n;i++)lg[i]=lg[i/2]+1;
+    int k = lg[n]+1;
+    st.assign(n,vi(k));
+    fori(i,n)st[i][0]=v[i];
+    fore(j,k-1){
+      for(int i=0;i+(1<<j)<=n;i++)
+        st[i][j]=min(st[i][j-1],st[i+(1<<(j-1))][j-1]);
+    }
+  }
+  int query(int l, int r){
+    int j= lg[r-l+1];
+    return min(st[l][j],st[r-(1<<j)+1][j]);
+  }
+};
+void solve(int caso){
+  string s,z,t;
+  read(s);
+  n = sz(s);
+  z = s; reverse(all(z));
+  z = s+"%"+z;
+  fori(i,sz(z))t.pb(z[i]),t.pb('&');
+  t= "&"+t;
+  SuffixArray sa(t);
+  vi lcp = sa.lcp, p = sa.p,rank=sa.rank;
+  int ans = 1, id =0;
+  Rmq rmq(lcp);
+  fori(i,sz(t)/2+1){
+    if(t[i]=='%')continue;
+    int l = rank[i], r = rank[sz(t)-1-i];
+    if(l>r)swap(l,r);
+    int len = rmq.query(l,r-1);
+    // dbg(l,r,len);
+    if(len>ans)ans=len,id=i;
+  }
+  string nas = t.substr(id,ans);
+  string ax = string(nas.begin()+1,nas.end());
+  reverse(all(ax));
+  nas = ax+nas;
+  string san;
+  for(char c: nas)if(c!='&')san.pb(c);
+  ps(san);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  /*read(tc); */
-  while(tc--){
-    solve();
+  // read(tc); 
+  fore(caso, tc){
+    solve(caso);
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
