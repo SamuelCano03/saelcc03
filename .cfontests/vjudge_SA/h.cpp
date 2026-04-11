@@ -141,59 +141,40 @@ struct SparseTable{
   }
 };
 void solve(int caso){
-  caso = 1;
-  while(true){
-    string s;
-    read(s);
-    if(s=="#")break;
-    n=sz(s);
-    SuffixArray sa(s);
-    vi lcp = sa.lcp, p = sa.p,rank=sa.rank;
-    SparseTable rmq(lcp);
-    auto getLcp = [&](int a, int b){
-      if(a==b)return n-a;
-      int l=min(rank[a],rank[b]),r=max(rank[a],rank[b]);
-      return rmq.query(l, r-1);
-    };
-    int ans = 1,id=min_element(all(s))-s.begin(),leni=1;
-    fore(len,n){
-      for(int i=1; i*len<n;i++){
-        int id1 = (i-1)*len;
-        int id2 = i*len;
-        int k = getLcp(id1, id2);
-        int rep = k/len+1;
-        int ret = len-k%len;
-        if(ret<len and id1-ret>=0){
-          int k2=getLcp(id1-ret, id2-ret);
-          rep = max(rep,k2/len+1);
-          // continue;
-        }
-        if(rep<ans)continue;
-        int start=max(0,id1-len+1);
-        for(int j=start;j<=id1;j++){
-          int curep=getLcp(j, j+len) / len+1;
-          if(curep>ans){
-            ans=curep;
-            id=j;
-            leni=len;
-          }else if(curep==ans){
-            // dbg(ans,id,leni,len);
-            // dbg(s.substr(j),s.substr(id));
-            if(rank[j]<rank[id])id=j,leni=len;
-          }
-        }
+  read(n);
+  string s; char c;
+  fori(i,n)read(c),s.pb(c);
+  SuffixArray sa(s);
+  vi lcp = sa.lcp, p = sa.p,rank=sa.rank;
+  SparseTable rmq(lcp);
+  int ans = 0;
+  fore(len,n){
+    for(int i=1; i<=n/len;i++){
+      int id1 = (i-1)*len;
+      int id2 = i*len;
+      if(id2>=n)continue;
+      int l = min(rank[id1],rank[id2]), r = max(rank[id1],rank[id2]);
+      int k = rmq.query(l,r-1);
+      int rep = k/len+1;
+      ans = max(ans,rep);
+      if(k%len!=0){
+        int ret = len - k%len;
+        id1 -= ret, id2-=ret;
+        if(id1<0)continue;
+        l = min(rank[id1],rank[id2]), r = max(rank[id1],rank[id2]);
+        k = rmq.query(l,r-1);
+        rep = k/len+1;
+        ans = max(ans,rep);
       }
     }
-    // dbg(id,leni,ans);
-    // dbg(ans);
-    cout<<"Case "<<caso++<<": ";ps(s.substr(id,leni*ans));
   }
+  ps(ans);
 }
 
 
 int32_t main(){
   ios::sync_with_stdio(false); cin.tie(0);
-  // read(tc); 
+  read(tc); 
   fore(caso, tc){
     solve(caso);
   }

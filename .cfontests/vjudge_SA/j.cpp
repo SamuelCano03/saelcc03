@@ -1,6 +1,7 @@
 /***--_saelcc03_--***/
 
 #include <algorithm>
+#include <functional>
 #include<iostream>
 #include <numeric>
 #include<vector>
@@ -12,11 +13,20 @@ using namespace std;
 #else
 #define dbg(...)
 #endif
+
+#include <ext/pb_ds/assoc_container.hpp>
+#include <ext/pb_ds/tree_policy.hpp>
+using namespace __gnu_pbds;
+template <class T>
+using ordered_set = tree<T, null_type, less<T>, rb_tree_tag, tree_order_statistics_node_update>;
+template <class T>
+using ordered_multi_set = tree<T, null_type, less_equal<T>, rb_tree_tag, tree_order_statistics_node_update>;
+
 #define fori(i,n) for(int i=0;i<(int)n;i++)
 #define fore(i,n) for(int i=1;i<=(int)n;i++)
 #define fora(i,n) for(int i=(int)n-1;i>=0;i--)
 #define foro(i,a,b) for(int i=a;i<(int)b;i++)
-// #define int long long
+#define int long long
 #define inf 1e9
 #define INF 1e18
 #define pii pair<int,int>
@@ -75,9 +85,8 @@ struct SuffixArray{
     lcp_build();
   }
   void sa_build(){
-    s.pb(0);
-    n++;
-    vi cnt(max(1000002,n)); p=c=vi(n);
+    s+="$";n++;
+    vi cnt(max(256ll,n)); p=c=vi(n);
     int cls = 1;
     fori(i,n)cnt[s[i]]++;
     partial_sum(all(cnt),cnt.begin());
@@ -116,78 +125,21 @@ struct SuffixArray{
     }
   }
 };
-
-
-struct SparseTable{
-  vvi st;
-  vi lg;
-  int n;
-  SparseTable(vi&v){
-    n=sz(v);
-    lg = vi(n+1);
-    for(int i=2;i<=n;i++)lg[i]=lg[i/2]+1;
-    int k=lg[n]+1;
-    st = vvi(n,vi(k));
-    fori(i,n)st[i][0]=v[i];
-    fore(j,k-1){
-      for(int i=0;i+(1<<j)<=n;i++)
-        st[i][j]=min(st[i][j-1],st[i+(1<<(j-1))][j-1]);
-    }
-  }
-  int query(int l, int r){
-    if(l>r)return 0;
-    int j=lg[r-l+1];
-    return min(st[l][j],st[r-(1<<j)+1][j]);
-  }
-};
 void solve(int caso){
-  caso = 1;
-  while(true){
-    string s;
-    read(s);
-    if(s=="#")break;
-    n=sz(s);
-    SuffixArray sa(s);
-    vi lcp = sa.lcp, p = sa.p,rank=sa.rank;
-    SparseTable rmq(lcp);
-    auto getLcp = [&](int a, int b){
-      if(a==b)return n-a;
-      int l=min(rank[a],rank[b]),r=max(rank[a],rank[b]);
-      return rmq.query(l, r-1);
-    };
-    int ans = 1,id=min_element(all(s))-s.begin(),leni=1;
-    fore(len,n){
-      for(int i=1; i*len<n;i++){
-        int id1 = (i-1)*len;
-        int id2 = i*len;
-        int k = getLcp(id1, id2);
-        int rep = k/len+1;
-        int ret = len-k%len;
-        if(ret<len and id1-ret>=0){
-          int k2=getLcp(id1-ret, id2-ret);
-          rep = max(rep,k2/len+1);
-          // continue;
-        }
-        if(rep<ans)continue;
-        int start=max(0,id1-len+1);
-        for(int j=start;j<=id1;j++){
-          int curep=getLcp(j, j+len) / len+1;
-          if(curep>ans){
-            ans=curep;
-            id=j;
-            leni=len;
-          }else if(curep==ans){
-            // dbg(ans,id,leni,len);
-            // dbg(s.substr(j),s.substr(id));
-            if(rank[j]<rank[id])id=j,leni=len;
-          }
-        }
-      }
-    }
-    // dbg(id,leni,ans);
-    // dbg(ans);
-    cout<<"Case "<<caso++<<": ";ps(s.substr(id,leni*ans));
+  read(n);
+  string a,b; read(a,b);
+  string s= a+"%"+b;
+  m = sz(a);
+  SuffixArray sa(s);
+  n = sz(s);
+  vi lcp = sa.lcp, p = sa.p;
+  int ans = 0,id=0;
+  fori(i,n-1){
+    int l = min(p[i],p[i+1]);
+    int r = max(p[i],p[i+1]);
+    if(l<=m and r>m and lcp[i]>ans)ans=lcp[i],id=l;
   }
+  ps(s.substr(id,ans));
 }
 
 
